@@ -1,165 +1,261 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Award, Users, Trophy } from 'lucide-react';
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Development Competition Awards 2025</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            overflow: hidden;
+        }
 
-const Presentation = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [showAward, setShowAward] = useState(false);
+        .slide {
+            height: 100vh;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
 
-  const nextSlide = () => {
-    setShowAward(false);
-    setTimeout(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-      setShowAward(true);
-    }, 300);
-  };
+        .slide.active {
+            display: flex;
+            opacity: 1;
+        }
 
-  const prevSlide = () => {
-    setShowAward(false);
-    setTimeout(() => {
-      setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-      setShowAward(true);
-    }, 300);
-  };
+        .title {
+            font-size: 3.5rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, #8dd6f8, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 3s infinite;
+            text-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
 
-  useEffect(() => {
-    setShowAward(true);
-    const handleKeyDown = (e) => {
-      if (e.key === 'ArrowRight') nextSlide();
-      if (e.key === 'ArrowLeft') prevSlide();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+        .subtitle {
+            font-size: 1.8rem;
+            margin-bottom: 3rem;
+            color: #8dd6f8;
+            animation: pulse 2s infinite;
+        }
 
-  const slides = [
-    {
-      type: 'welcome',
-      content: {
-        title: '2025 App Development Challenge',
-        subtitle: 'Class 11 & 12 Final Presentation Results'
-      }
-    },
-    {
-      type: 'award',
-      content: {
-        place: 'Third Place 🥉',
-        title: 'Bronze Award',
-        group: 'Group C',
-        details: 'Investment: ¥39,126,121',
-        color: 'bronze'
-      }
-    },
-    {
-      type: 'award',
-      content: {
-        place: 'Second Place 🥈',
-        title: 'Silver Award',
-        group: 'Group B',
-        details: 'Investment: ¥42,030,000',
-        color: 'silver'
-      }
-    },
-    {
-      type: 'award',
-      content: {
-        place: 'First Place 🥇',
-        title: 'Gold Award',
-        group: 'Group D',
-        details: 'Investment: ¥61,080,000',
-        color: 'gold'
-      }
-    },
-    {
-      type: 'final',
-      content: {
-        messages: [
-          'Congratulations to all participants! 🌟',
-          'Your innovation and dedication were outstanding! 💡',
-          'Keep coding, keep creating! 🚀'
-        ]
-      }
-    }
-  ];
+        .award {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1rem;
+            max-width: 600px;
+            width: 100%;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-  const currentContent = slides[currentSlide];
+        .award.visible {
+            transform: scale(1);
+            opacity: 1;
+        }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-blue-900 text-white">
-      <div className="container mx-auto px-4 py-8 relative min-h-screen">
-        {/* Background Design */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            <Trophy className="w-64 h-64 text-blue-500 animate-pulse" />
-          </div>
-        </div>
+        .award-title {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
 
-        {/* Content */}
-        <div className="relative z-10 min-h-screen flex items-center justify-center">
-          {currentContent.type === 'welcome' && (
-            <div className="text-center space-y-8">
-              <h1 className="text-6xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                {currentContent.content.title}
-              </h1>
-              <p className="text-3xl text-blue-300 animate-pulse">
-                {currentContent.content.subtitle}
-              </p>
-              <Users className="w-16 h-16 mx-auto text-blue-400 animate-bounce" />
-            </div>
-          )}
+        .award-title.gold {
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
 
-          {currentContent.type === 'award' && (
-            <div className={`transform transition-all duration-500 ${showAward ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}>
-              <div className="text-center space-y-8">
-                <h2 className="text-4xl font-bold">{currentContent.content.place}</h2>
-                <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 space-y-4 max-w-xl mx-auto">
-                  <Award className={`w-16 h-16 mx-auto ${
-                    currentContent.content.color === 'gold' ? 'text-yellow-400' :
-                    currentContent.content.color === 'silver' ? 'text-gray-300' :
-                    'text-orange-400'
-                  }`} />
-                  <h3 className={`text-3xl font-bold ${
-                    currentContent.content.color === 'gold' ? 'text-yellow-400' :
-                    currentContent.content.color === 'silver' ? 'text-gray-300' :
-                    'text-orange-400'
-                  }`}>
-                    {currentContent.content.title}
-                  </h3>
-                  <p className="text-xl">{currentContent.content.group}</p>
-                  <p className="text-lg text-blue-300">{currentContent.content.details}</p>
-                </div>
-              </div>
-            </div>
-          )}
+        .award-title.silver {
+            color: #c0c0c0;
+            text-shadow: 0 0 10px rgba(192, 192, 192, 0.5);
+        }
 
-          {currentContent.type === 'final' && (
-            <div className="text-center space-y-6 max-w-2xl mx-auto">
-              {currentContent.content.messages.map((message, index) => (
-                <p key={index} className="text-2xl text-blue-300 animate-fade-in">
-                  {message}
-                </p>
-              ))}
-            </div>
-          )}
-        </div>
+        .award-title.bronze {
+            color: #cd7f32;
+            text-shadow: 0 0 10px rgba(205, 127, 50, 0.5);
+        }
 
-        {/* Navigation */}
-        <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-4">
-          <button
-            onClick={prevSlide}
-            className="px-6 py-3 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-all"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-          <button
-            onClick={nextSlide}
-            className="px-6 py-3 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-all"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
-        </div>
-      </div>
+        .award-details {
+            font-size: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .nav-buttons {
+            position: fixed;
+            bottom: 2rem;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            backdrop-filter: blur(5px);
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .final-message {
+            font-size: 2rem;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #8dd6f8;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            .subtitle {
+                font-size: 1.4rem;
+            }
+            .award-title {
+                font-size: 1.8rem;
+            }
+            .award-details {
+                font-size: 1.2rem;
+            }
+            .final-message {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Slide -->
+    <div class="slide active">
+        <h1 class="title">2025 App Development Challenge</h1>
+        <div class="subtitle">Investment Results</div>
     </div>
-  );
-};
 
-export default Presentation;
+    <!-- Third Place Slide -->
+    <div class="slide">
+        <h2 class="title">Third Place 🥉</h2>
+        <div class="award">
+            <div class="award-title bronze">Bronze Award</div>
+            <div class="award-details">
+                <p>Group: Group C</p>
+                <p>Investment: ¥9,815,000</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second Place Slide -->
+    <div class="slide">
+        <h2 class="title">Second Place 🥈</h2>
+        <div class="award">
+            <div class="award-title silver">Silver Award</div>
+            <div class="award-details">
+                <p>Group: Group D</p>
+                <p>Investment: ¥18,300,000</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- First Place Slide -->
+    <div class="slide">
+        <h2 class="title">First Place 🥇</h2>
+        <div class="award">
+            <div class="award-title gold">Gold Award</div>
+            <div class="award-details">
+                <p>Group: Group A</p>
+                <p>Investment: ¥18,950,000</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Final Message Slide -->
+    <div class="slide">
+        <div class="final-message">
+            <p>To all teams: You made great investment decisions! 🌟</p>
+            <p>Your strategic thinking and collaboration were outstanding! 💪</p>
+            <p>Be proud of your achievements! 🎉</p>
+        </div>
+    </div>
+
+    <div class="nav-buttons">
+        <button onclick="prevSlide()">Previous</button>
+        <button onclick="nextSlide()">Next</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function showSlide(index) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = index;
+            slides[currentSlide].classList.add('active');
+            
+            const awards = slides[currentSlide].querySelectorAll('.award');
+            awards.forEach(award => award.classList.add('visible'));
+        }
+
+        function nextSlide() {
+            showSlide((currentSlide + 1) % slides.length);
+        }
+
+        function prevSlide() {
+            showSlide((currentSlide - 1 + slides.length) % slides.length);
+        }
+
+        // Initialize first slide
+        document.addEventListener('DOMContentLoaded', () => {
+            const awards = document.querySelectorAll('.award');
+            awards.forEach(award => award.classList.add('visible'));
+        });
+
+        // Optional: Allow keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+    </script>
+</body>
+</html>
