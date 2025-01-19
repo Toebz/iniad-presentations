@@ -1,0 +1,165 @@
+import React, { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight, Award, Users, Trophy } from 'lucide-react';
+
+const Presentation = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [showAward, setShowAward] = useState(false);
+
+  const nextSlide = () => {
+    setShowAward(false);
+    setTimeout(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+      setShowAward(true);
+    }, 300);
+  };
+
+  const prevSlide = () => {
+    setShowAward(false);
+    setTimeout(() => {
+      setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+      setShowAward(true);
+    }, 300);
+  };
+
+  useEffect(() => {
+    setShowAward(true);
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowRight') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const slides = [
+    {
+      type: 'welcome',
+      content: {
+        title: '2025 App Development Challenge',
+        subtitle: 'Class 11 & 12 Final Presentation Results'
+      }
+    },
+    {
+      type: 'award',
+      content: {
+        place: 'Third Place 🥉',
+        title: 'Bronze Award',
+        group: 'Group C',
+        details: 'Investment: ¥39,126,121',
+        color: 'bronze'
+      }
+    },
+    {
+      type: 'award',
+      content: {
+        place: 'Second Place 🥈',
+        title: 'Silver Award',
+        group: 'Group B',
+        details: 'Investment: ¥42,030,000',
+        color: 'silver'
+      }
+    },
+    {
+      type: 'award',
+      content: {
+        place: 'First Place 🥇',
+        title: 'Gold Award',
+        group: 'Group D',
+        details: 'Investment: ¥61,080,000',
+        color: 'gold'
+      }
+    },
+    {
+      type: 'final',
+      content: {
+        messages: [
+          'Congratulations to all participants! 🌟',
+          'Your innovation and dedication were outstanding! 💡',
+          'Keep coding, keep creating! 🚀'
+        ]
+      }
+    }
+  ];
+
+  const currentContent = slides[currentSlide];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-blue-900 text-white">
+      <div className="container mx-auto px-4 py-8 relative min-h-screen">
+        {/* Background Design */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <Trophy className="w-64 h-64 text-blue-500 animate-pulse" />
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10 min-h-screen flex items-center justify-center">
+          {currentContent.type === 'welcome' && (
+            <div className="text-center space-y-8">
+              <h1 className="text-6xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                {currentContent.content.title}
+              </h1>
+              <p className="text-3xl text-blue-300 animate-pulse">
+                {currentContent.content.subtitle}
+              </p>
+              <Users className="w-16 h-16 mx-auto text-blue-400 animate-bounce" />
+            </div>
+          )}
+
+          {currentContent.type === 'award' && (
+            <div className={`transform transition-all duration-500 ${showAward ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}>
+              <div className="text-center space-y-8">
+                <h2 className="text-4xl font-bold">{currentContent.content.place}</h2>
+                <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 space-y-4 max-w-xl mx-auto">
+                  <Award className={`w-16 h-16 mx-auto ${
+                    currentContent.content.color === 'gold' ? 'text-yellow-400' :
+                    currentContent.content.color === 'silver' ? 'text-gray-300' :
+                    'text-orange-400'
+                  }`} />
+                  <h3 className={`text-3xl font-bold ${
+                    currentContent.content.color === 'gold' ? 'text-yellow-400' :
+                    currentContent.content.color === 'silver' ? 'text-gray-300' :
+                    'text-orange-400'
+                  }`}>
+                    {currentContent.content.title}
+                  </h3>
+                  <p className="text-xl">{currentContent.content.group}</p>
+                  <p className="text-lg text-blue-300">{currentContent.content.details}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {currentContent.type === 'final' && (
+            <div className="text-center space-y-6 max-w-2xl mx-auto">
+              {currentContent.content.messages.map((message, index) => (
+                <p key={index} className="text-2xl text-blue-300 animate-fade-in">
+                  {message}
+                </p>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Navigation */}
+        <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-4">
+          <button
+            onClick={prevSlide}
+            className="px-6 py-3 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-all"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <button
+            onClick={nextSlide}
+            className="px-6 py-3 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-all"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Presentation;
